@@ -30,14 +30,10 @@ router.post("/login",async (req,res)=>{
     }else{
         return res.status(404).json({success: false,message:"User not found. Please create a new account."});
     }
-
-
     
  } catch (error) {
     console.log(`Login Error ${error}`);
  }
-
-
 
 });
 
