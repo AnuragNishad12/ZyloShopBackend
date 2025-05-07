@@ -3,6 +3,7 @@ import connectDB from './db/connection.js';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import loginRoute from './routes/loginRoute.js'
+import CategoryRoute from './routes/CategoryRoute.js'
 import cors from 'cors'
 
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api/auth',authRoutes);
 
 app.use('/api/auth',loginRoute);
+app.use('/api',CategoryRoute);
 
 
 connectDB().then(()=>{
