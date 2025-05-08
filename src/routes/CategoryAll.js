@@ -1,16 +1,19 @@
-import express from 'express';
-import CategoryAll from '../models/CategoryAll.js';
+import express from 'express'
+import Category from '../models/Category.js'
 
 const route = express.Router();
 
+route.get('/allCategory',async (req,res)=>{
 
-route.get("/category/all",async(req,res)=>{
-    try {
-        const categories = await CategoryAll.find();
-        res.json({success:"Successfull",message:categories})
-    } catch (error) {
-        res.status(500).json({success:'Failed',message:'Server Error'});
-    }
+try {
+
+    const categories = await Category.find();
+    res.status(200).json({success:"Successful",message:categories})
+} catch (error) {
+    res.status(500).json({success:"Failed",message:"Server Error"})
+}
+
+
 });
 
 export default route;
