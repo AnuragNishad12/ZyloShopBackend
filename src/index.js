@@ -6,6 +6,7 @@ import loginRoute from './routes/loginRoute.js'
 import CategoryRoute from './routes/CategoryRoute.js'
 import CategoryAll from './routes/CategoryAll.js'
 import ProductRoute from './routes/productRoute.js'
+import Cart from './routes/cart.js'
 import cors from 'cors'
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use('/api/auth',loginRoute);
 app.use('/api',CategoryRoute);
 app.use('/api',CategoryAll);
 app.use('/api',ProductRoute);
+app.use('/api',Cart);
 
 
 
