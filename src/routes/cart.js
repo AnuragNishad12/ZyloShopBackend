@@ -10,7 +10,7 @@ router.post('/addCart', authMiddleware, async (req, res) => {
     const { productId, quantity = 1 } = req.body;
     const userId = req.user._id;
     
-    // Check if userId is available
+    
     if (!userId) {
         return res.status(400).json({ 
             success: "Failed", 
@@ -25,7 +25,6 @@ router.post('/addCart', authMiddleware, async (req, res) => {
         let cart = await Cart.findOne({ user: userId });
         
         if (!cart) {
-            // Create a new cart with userId explicitly set
             cart = new Cart({ 
                 user: userId, 
                 items: [{ product: productId, quantity }] 
@@ -60,13 +59,22 @@ router.post('/addCart', authMiddleware, async (req, res) => {
 router.get('/GetCartItems', authMiddleware, async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user._id }).populate('items.product');
-    if (!cart) return res.status(200).json({ items: [] });
 
-    res.status(200).json({ items: cart.items });
+    if (!cart) return res.status(200).json({ items: [], totalItems: 0, totalQuantity: 0 });
+
+    const totalItems = cart.items.length;
+    const totalQuantity = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+
+    res.status(200).json({
+      items: cart.items,
+      totalItems,
+      totalQuantity
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+
 
 // DELETE /api/cart/:productId
 router.delete('/CartDELETE', authMiddleware, async (req, res) => {
