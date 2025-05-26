@@ -11,6 +11,7 @@ const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET;
 
 router.post("/login", async (req, res) => {
   try {
+    console.log("Login request:", req.body);
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -21,6 +22,7 @@ router.post("/login", async (req, res) => {
     }
 
     const user = await User.findOne({ email: email });
+    console.log("User found:", user);
 
     if (!user) {
       return res.status(404).json({
@@ -30,6 +32,8 @@ router.post("/login", async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Password match:", isMatch);
+
     if (!isMatch) {
       return res.status(401).json({
         success: false,
@@ -37,26 +41,24 @@ router.post("/login", async (req, res) => {
       });
     }
 
-   
+    console.log("Creating tokens...");
     const accessToken = jwt.sign(
       { userId: user._id },
       ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" } 
+      { expiresIn: "15m" }
     );
 
- 
     const refreshToken = jwt.sign(
       { userId: user._id },
       REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" }
     );
 
-   
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false, 
+      secure: false,
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, 
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({
@@ -72,13 +74,14 @@ router.post("/login", async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`Login Error: ${error}`);
+    console.error(`Login Error:`, error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
     });
   }
 });
+
 
 router.post("/RefreshToken",async(req,res)=>{
   const token = req.cookies.refreshToken;
