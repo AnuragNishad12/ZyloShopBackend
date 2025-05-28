@@ -9,6 +9,7 @@ import ProductRoute from './routes/productRoute.js'
 import Cart from './routes/cart.js'
 import cors from 'cors'
 import cookieParser from "cookie-parser";
+import dealsRoute from './routes/dealsroute.js'
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use('/api',CategoryRoute);
 app.use('/api',CategoryAll);
 app.use('/api',ProductRoute);
 app.use('/api',Cart);
+app.use('/api',dealsRoute);
 
 
 
