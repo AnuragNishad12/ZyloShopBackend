@@ -10,10 +10,21 @@ const router = express.Router();
 router.post('/signup', async (req, res) => {
     try {
       const { fullName, email, password, mobile } = req.body;
-  
-      if (!fullName || !email || !password || !mobile) {
-        return res.status(400).json({ message: 'All fields are required' });
-      }
+
+      const missingfields = [];
+
+      if(!fullName) missingfields.push("Full Name");
+      if(!email) missingfields.push("Email");
+      if(!password) missingfields.push("Password");
+      if(!mobile) missingfields.push("Mobile Number")
+
+        if(missingfields.length>0){
+          return res.status(400).json({status:false,
+            message:`Missing Field are ${missingfields.join(', ')}`
+          })
+        }
+
+
   
       const existingUser = await User.findOne({ mobilenumber:mobile });
   
@@ -35,7 +46,7 @@ router.post('/signup', async (req, res) => {
       const token = jwt.sign(
         { userId: newUser._id },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '1d' }
       );
   
       res.status(201).json({
