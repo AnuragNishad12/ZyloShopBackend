@@ -2,6 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
+import Joi from "joi";
 
 const router = express.Router();
 
@@ -9,10 +10,28 @@ const router = express.Router();
 const ACCESS_TOKEN_SECRET = process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET;
 
+
+const loginValidationSchema = Joi.object({
+  email:Joi.string().email().required(),
+  password:Joi.string().min(6).required()
+})
+
+
+
 router.post("/login", async (req, res) => {
   try {
+
+  const{error,value} = loginValidationSchema(req.body)
+  if(error){
+    res.status(400).json({
+      status:false,
+      message:error.details[0].message
+    })
+  }
+
+
     console.log("Login request:", req.body);
-    const { email, password } = req.body;
+    const { email, password } = value;
 
     if (!email || !password) {
       return res.status(400).json({
