@@ -11,7 +11,8 @@ const dealSchema = new mongoose.Schema({
     },
     discountPercentage:{
         type:Number,
-        required:true
+        required:true,
+        min:0
     },
     productIds:[mongoose.Schema.Types.ObjectId],
     expiryDate:{

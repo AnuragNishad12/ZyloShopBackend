@@ -1,15 +1,34 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { sign } from 'jsonwebtoken';
 import User from '../models/User.js';
+import Joi from 'joi'
 
 
 const router = express.Router();
 
+const signupValidationSchema = Joi.object({
+  fullName:Joi.string().min(3).max(50).required(),
+  email:Joi.string().email().required(),
+  password:Joi.string().min(6).required(),
+  mobilenumber:Joi.string().pattern(/^\d{10}$/).required()
+});
+
+
 
 router.post('/signup', async (req, res) => {
     try {
-      const { fullName, email, password, mobile } = req.body;
+
+    const{error,value} = signupValidationSchema.validate(req.body);
+    if(error){
+      res.status(400).json({
+        status:false,
+        message:error.details[0].message
+      });
+    }
+
+
+      const { fullName, email, password, mobile } = value
 
       const missingfields = [];
 
@@ -26,11 +45,13 @@ router.post('/signup', async (req, res) => {
 
 
   
-      const existingUser = await User.findOne({ mobilenumber:mobile });
+      const existingUser = await User.findOne({
+        $or:[{mobilenumber:mobile},{email:email}]
+      });
   
-      if (existingUser) {
-        return res.status(409).json({ message: 'User already exists' });
-      }
+       if (existingUser) {
+      return res.status(409).json({ message: 'User with this email or mobile number already exists' });
+    }
   
       const hashedPassword = await bcrypt.hash(password, 10);
   
