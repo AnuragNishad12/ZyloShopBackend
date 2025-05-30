@@ -9,7 +9,7 @@ const CategorySchmeaValidate = Joi.object({
     slug:Joi.string().required().min(3).max(50)
 })
 
-route.post("/category", async (valuereq, res) => {
+route.post("/category", async (req, res) => {
     try {
       
         const{error,value} = CategorySchmeaValidate.validate(req.body);
