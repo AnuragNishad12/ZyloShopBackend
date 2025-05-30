@@ -1,11 +1,25 @@
 import express from 'express';
 import Category from '../models/Category.js';
-
+import Joi from 'joi'
 const route = express.Router();
 
-route.post("/category", async (req, res) => {
+
+const CategorySchmeaValidate = Joi.object({
+    CategoryName:Joi.string().required().min(3).max(50),
+    slug:Joi.string().required().min(3).max(50)
+})
+
+route.post("/category", async (valuereq, res) => {
     try {
-        const { CategoryName, slug } = req.body;
+      
+        const{error,value} = CategorySchmeaValidate.validate(req.body);
+        if(error){
+            res.status(409).json({
+                status:false,
+                message:error.details[0].message
+            })
+        }
+        const { CategoryName, slug } =value;
 
         if (!CategoryName || !slug) {
             return res.status(400).json({
