@@ -21,7 +21,8 @@ const loginValidationSchema = Joi.object({
 router.post("/login", async (req, res) => {
   try {
 
-  const{error,value} = loginValidationSchema(req.body)
+  const { error, value } = loginValidationSchema.validate(req.body);
+
   if(error){
     res.status(400).json({
       status:false,

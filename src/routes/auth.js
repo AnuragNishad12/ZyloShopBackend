@@ -1,6 +1,6 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import jwt, { sign } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import Joi from 'joi'
 
