@@ -10,12 +10,17 @@ import Cart from './routes/cart.js'
 import cors from 'cors'
 import cookieParser from "cookie-parser";
 import dealsRoute from './routes/dealsroute.js'
+import compression from 'compression';
+import helmet from 'helmet'
+
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(cookieParser());
+app.use(compression());
+app.use(helmet());
 
 const PORT = process.env.PORT || 5000
 app.use(express.json());
